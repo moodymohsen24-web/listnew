@@ -1,6 +1,6 @@
 import React from 'react';
 import { FilterState } from '../types';
-import { CITIES, CATEGORIES } from '../mockData';
+import { CITIES, CITIES_DATA, CATEGORIES } from '../mockData';
 import { Filter, X } from 'lucide-react';
 
 interface FilterSidebarProps {
@@ -13,8 +13,15 @@ interface FilterSidebarProps {
 const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, className = "", onClose }) => {
   
   const handleChange = (key: keyof FilterState, value: any) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    // If city changes, reset region
+    if (key === 'city') {
+      setFilters(prev => ({ ...prev, city: value, region: '' }));
+    } else {
+      setFilters(prev => ({ ...prev, [key]: value }));
+    }
   };
+
+  const availableRegions = filters.city ? CITIES_DATA[filters.city] || [] : [];
 
   return (
     <div className={`bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit ${className}`}>
@@ -47,8 +54,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, clas
       </div>
 
       {/* City */}
-      <div className="mb-6">
-        <label className="block text-sm font-bold text-slate-700 mb-2">المدينة / المحافظة</label>
+      <div className="mb-4">
+        <label className="block text-sm font-bold text-slate-700 mb-2">المحافظة</label>
         <select 
           value={filters.city} 
           onChange={(e) => handleChange('city', e.target.value)}
@@ -61,10 +68,27 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, clas
         </select>
       </div>
 
+      {/* Region (Conditional) */}
+      {filters.city && availableRegions.length > 0 && (
+        <div className="mb-6 animate-in fade-in slide-in-from-top-2">
+          <label className="block text-sm font-bold text-slate-700 mb-2">المنطقة / الحي</label>
+          <select 
+            value={filters.region} 
+            onChange={(e) => handleChange('region', e.target.value)}
+            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+          >
+            <option value="">كل المناطق</option>
+            {availableRegions.map(region => (
+              <option key={region} value={region}>{region}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
       {/* Category */}
       <div className="mb-6">
         <label className="block text-sm font-bold text-slate-700 mb-2">التصنيف</label>
-        <div className="space-y-2">
+        <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
             <label className="flex items-center gap-2 cursor-pointer">
                 <input 
                     type="radio" 

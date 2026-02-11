@@ -12,6 +12,7 @@ const Directory: React.FC = () => {
   const [filters, setFilters] = useState<FilterState>({
     searchQuery: '',
     city: '',
+    region: '',
     category: '',
     minRating: 0,
     minFollowers: 0,
@@ -37,6 +38,7 @@ const Directory: React.FC = () => {
   const filteredSuppliers = suppliers.filter(supplier => {
     if (filters.searchQuery && !supplier.name.includes(filters.searchQuery) && !supplier.description.includes(filters.searchQuery)) return false;
     if (filters.city && supplier.city !== filters.city) return false;
+    if (filters.region && supplier.region !== filters.region) return false; // Filter by region
     if (filters.category && supplier.category !== filters.category) return false;
     if (filters.verifiedOnly && !supplier.isVerified) return false;
     if (filters.minRating > 0 && supplier.rating < filters.minRating) return false;
@@ -135,7 +137,7 @@ const Directory: React.FC = () => {
                    لم نتمكن من العثور على موردين يطابقون خيارات البحث الحالية. حاول تغيير الفلاتر أو كلمة البحث.
                  </p>
                  <button 
-                  onClick={() => setFilters({ searchQuery: '', city: '', category: '', minRating: 0, minFollowers: 0, verifiedOnly: false })}
+                  onClick={() => setFilters({ searchQuery: '', city: '', region: '', category: '', minRating: 0, minFollowers: 0, verifiedOnly: false })}
                   className="mt-6 text-primary-600 font-bold hover:underline"
                  >
                    إعادة تعيين الفلاتر

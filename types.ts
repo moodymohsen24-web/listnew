@@ -24,6 +24,7 @@ export interface Supplier {
   description: string;
   category: string;
   city: string;
+  region?: string; // Added region
   address: string;
   rating: number;
   reviewCount: number;
@@ -53,8 +54,13 @@ export interface User {
 export interface FilterState {
   searchQuery: string;
   city: string;
+  region: string; // Added region filter
   category: string;
   minRating: number;
   minFollowers: number;
   verifiedOnly: boolean;
 }
+
+export type CityData = {
+  [key: string]: string[];
+};
