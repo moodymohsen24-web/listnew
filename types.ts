@@ -1,3 +1,4 @@
+
 export interface SocialStats {
   platform: 'facebook' | 'tiktok' | 'telegram' | 'instagram' | 'website';
   followers: number;
@@ -24,7 +25,7 @@ export interface Supplier {
   description: string;
   category: string;
   city: string;
-  region?: string; // Added region
+  region?: string;
   address: string;
   rating: number;
   reviewCount: number;
@@ -48,7 +49,11 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  phone?: string;
+  companyName?: string;
   role: 'user' | 'admin' | 'supplier';
+  isActive: boolean; // New: For banning/activating users
+  joinedDate: string;
 }
 
 export interface FilterState {
@@ -59,11 +64,17 @@ export interface FilterState {
   minRating: number;
   minFollowers: number;
   verifiedOnly: boolean;
-  maxMinOrderValue: number; // New: Filter by max minimum order capability
-  selectedTags: string[]; // New: Filter by tags
-  sortBy: 'rating' | 'reviews' | 'founded' | 'minOrder'; // New: Sort logic
+  maxMinOrderValue: number;
+  selectedTags: string[];
+  sortBy: 'rating' | 'reviews' | 'founded' | 'minOrder';
 }
 
 export type CityData = {
   [key: string]: string[];
 };
+
+export interface AppSettings {
+  registrationOpen: boolean;
+  maintenanceMode: boolean;
+  allowUserSupplierCreation: boolean;
+}

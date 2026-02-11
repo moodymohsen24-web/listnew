@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, Search, User as UserIcon, LogOut, LayoutDashboard, X, Briefcase, Globe } from 'lucide-react';
+import { Menu, Search, User as UserIcon, LogOut, LayoutDashboard, X, Briefcase, Globe, Settings, UserCircle } from 'lucide-react';
 import { User } from '../types';
 
 interface NavbarProps {
@@ -59,18 +60,24 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
               <Link to="/directory" className={isActive('/directory')}>السوق التجاري</Link>
               <Link to="/pricing" className={isActive('/pricing')}>الباقات</Link>
               <Link to="/about" className={isActive('/about')}>من نحن</Link>
+              
+              {/* Admin Link (Fixed in Header) */}
+              {user && user.role === 'admin' && (
+                 <Link to="/admin" className={`flex items-center gap-1.5 ${isActive('/admin')}`}>
+                    <LayoutDashboard size={18} />
+                    لوحة التحكم
+                 </Link>
+              )}
             </div>
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-3">
               {user ? (
                 <div className="flex items-center gap-3 bg-slate-50 p-1 pr-3 rounded-full border border-slate-200">
-                  <span className="text-sm font-bold text-primary-900">{user.name}</span>
-                  {user.role === 'admin' && (
-                    <Link to="/admin" className="w-8 h-8 flex items-center justify-center bg-primary-900 text-white rounded-full hover:bg-primary-800" title="لوحة التحكم">
-                      <LayoutDashboard size={14} />
-                    </Link>
-                  )}
+                  <Link to="/profile" className="flex items-center gap-2 hover:bg-slate-100 rounded-full py-1 px-2 transition-colors">
+                     <span className="text-sm font-bold text-primary-900">{user.name}</span>
+                  </Link>
+                  
                   <button onClick={onLogout} className="w-8 h-8 flex items-center justify-center bg-white text-red-500 border border-slate-200 rounded-full hover:bg-red-50">
                     <LogOut size={14} />
                   </button>
@@ -102,7 +109,19 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
             <Link to="/pricing" className="p-3 font-bold text-slate-700 hover:bg-slate-50 rounded-lg">الباقات</Link>
             <div className="h-px bg-slate-100 my-2"></div>
             {user ? (
-               <button onClick={onLogout} className="p-3 font-bold text-red-600 hover:bg-red-50 rounded-lg text-right">تسجيل خروج</button>
+               <>
+                 <Link to="/profile" className="p-3 font-bold text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2">
+                    <UserCircle size={18} /> حسابي ({user.name})
+                 </Link>
+                 {user.role === 'admin' && (
+                     <Link to="/admin" className="p-3 font-bold text-primary-700 hover:bg-primary-50 rounded-lg flex items-center gap-2 bg-primary-50 border border-primary-100 mb-2">
+                        <LayoutDashboard size={18} /> لوحة التحكم
+                     </Link>
+                 )}
+                 <button onClick={onLogout} className="p-3 font-bold text-red-600 hover:bg-red-50 rounded-lg text-right w-full flex items-center gap-2">
+                    <LogOut size={18} /> تسجيل خروج
+                 </button>
+               </>
             ) : (
                <div className="flex gap-2">
                  <Link to="/login" className="flex-1 text-center py-3 bg-slate-100 text-slate-800 font-bold rounded-lg">دخول</Link>
