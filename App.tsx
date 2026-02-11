@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Directory from './pages/Directory';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
+import SupplierDetails from './pages/SupplierDetails';
 import { User } from './types';
 
 const App: React.FC = () => {
@@ -24,6 +25,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/directory" element={<Directory />} />
+            <Route path="/supplier/:id" element={<SupplierDetails />} />
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route 
               path="/admin" 

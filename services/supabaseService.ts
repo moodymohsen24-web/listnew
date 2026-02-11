@@ -18,6 +18,17 @@ export const fetchSuppliers = async (): Promise<Supplier[]> => {
 };
 
 /**
+ * Fetch a single supplier by ID
+ */
+export const fetchSupplierById = async (id: string): Promise<Supplier | undefined> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(MOCK_SUPPLIERS.find(s => s.id === id));
+      }, 500);
+    });
+  };
+
+/**
  * Mock authentication function
  */
 export const loginUser = async (email: string): Promise<User> => {
