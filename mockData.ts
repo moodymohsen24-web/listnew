@@ -23,7 +23,12 @@ export const CATEGORIES = [
   'بلاستيك وتغليف',
   'كيماويات',
   'طباعة وإعلان',
-  'سيارات وقطع غيار'
+  'سيارات وقطع غيار',
+  'مستلزمات طبية', // New
+  'زراعة ومبيدات', // New
+  'جلود وأحذية',   // New
+  'أدوات مكتبية',  // New
+  'مستحضرات تجميل' // New
 ];
 
 export const MOCK_SUPPLIERS: Supplier[] = [
@@ -119,7 +124,7 @@ export const MOCK_SUPPLIERS: Supplier[] = [
     location: { lat: 31.4175, lng: 31.8144 },
     minOrderValue: 15000,
     foundedYear: 1980,
-    tags: ['أثاث', 'غرف نوم', 'شحن دولي'],
+    tags: ['أثاث', 'غرف نوم', 'شحن دولي', 'كلاسيك'],
     reviews: []
   },
   {
@@ -145,8 +150,58 @@ export const MOCK_SUPPLIERS: Supplier[] = [
        { name: 'مكتب المبيعات', role: 'المبيعات', phone: '+201555555555' }
     ],
     location: { lat: 30.2995, lng: 31.7455 },
+    minOrderValue: 5000,
     foundedYear: 2018,
     tags: ['طباعة', 'تغليف', 'صديق للبيئة'],
+    reviews: []
+  },
+  {
+    id: '5',
+    name: 'ميديكال جروب للمستلزمات الطبية',
+    description: 'تجهيز المستشفيات والعيادات بأحدث الأجهزة الطبية والمستهلكات. وكلاء لكبرى الشركات العالمية.',
+    category: 'مستلزمات طبية',
+    city: 'الجيزة',
+    region: 'الدقي',
+    address: 'شارع مصدق، الدقي، الجيزة',
+    rating: 4.7,
+    reviewCount: 30,
+    isVerified: true,
+    logoUrl: 'https://picsum.photos/100/100?random=5',
+    coverUrl: 'https://picsum.photos/800/400?random=5',
+    gallery: ['https://picsum.photos/400/300?random=50'],
+    contactPhone: '+201000000005',
+    socialStats: [
+      { platform: 'facebook', followers: 50000, url: '#' },
+      { platform: 'website', followers: 0, url: 'www.medical-eg.com' }
+    ],
+    salesContacts: [],
+    location: { lat: 30.0488, lng: 31.2114 },
+    minOrderValue: 10000,
+    foundedYear: 2005,
+    tags: ['مستشفيات', 'أجهزة طبية', 'تعقيم'],
+    reviews: []
+  },
+  {
+    id: '6',
+    name: 'أجري جرين للأسمدة',
+    description: 'جميع أنواع الأسمدة الزراعية والمبيدات الحشرية المصرح بها. استشارات زراعية مجانية.',
+    category: 'زراعة ومبيدات',
+    city: 'الغربية',
+    region: 'طنطا',
+    address: 'طريق مصر اسكندرية الزراعي',
+    rating: 4.0,
+    reviewCount: 15,
+    isVerified: false,
+    logoUrl: 'https://picsum.photos/100/100?random=6',
+    coverUrl: 'https://picsum.photos/800/400?random=6',
+    gallery: [],
+    contactPhone: '+201000000006',
+    socialStats: [],
+    salesContacts: [],
+    location: { lat: 30.7865, lng: 31.0004 },
+    minOrderValue: 1000,
+    foundedYear: 2020,
+    tags: ['زراعة', 'أسمدة', 'مبيدات'],
     reviews: []
   }
 ];

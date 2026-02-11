@@ -54,11 +54,14 @@ export interface User {
 export interface FilterState {
   searchQuery: string;
   city: string;
-  region: string; // Added region filter
+  region: string; 
   category: string;
   minRating: number;
   minFollowers: number;
   verifiedOnly: boolean;
+  maxMinOrderValue: number; // New: Filter by max minimum order capability
+  selectedTags: string[]; // New: Filter by tags
+  sortBy: 'rating' | 'reviews' | 'founded' | 'minOrder'; // New: Sort logic
 }
 
 export type CityData = {

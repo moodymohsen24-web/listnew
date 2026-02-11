@@ -64,8 +64,8 @@ const Home: React.FC = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {CATEGORIES.slice(0, 4).map((cat, idx) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {CATEGORIES.slice(0, 5).map((cat, idx) => (
               <Link key={idx} to={`/directory?cat=${cat}`} className="group bg-slate-50 hover:bg-white border border-slate-100 hover:border-primary-200 rounded-2xl p-6 transition-all hover:shadow-lg text-center">
                 <div className="w-16 h-16 mx-auto bg-primary-100 rounded-full flex items-center justify-center text-primary-600 mb-4 group-hover:scale-110 transition-transform">
                   <TrendingUp size={28} />

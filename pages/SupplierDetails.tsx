@@ -5,7 +5,8 @@ import { Supplier, User, Review } from '../types';
 import { 
   MapPin, Star, BadgeCheck, Phone, Mail, Globe, 
   Facebook, Twitter, Instagram, Send, Building2, 
-  Clock, ArrowRight, UserCircle2, Loader2, Share2, LogIn, CheckCircle2
+  Clock, ArrowRight, UserCircle2, Loader2, Share2, LogIn, CheckCircle2,
+  X, ChevronLeft, ChevronRight, Maximize2
 } from 'lucide-react';
 
 interface SupplierDetailsProps {
@@ -19,6 +20,10 @@ const SupplierDetails: React.FC<SupplierDetailsProps> = ({ user }) => {
   const [activeImage, setActiveImage] = useState<string>('');
   const [showCopied, setShowCopied] = useState(false);
   
+  // Lightbox State
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   // Review Form State
   const [newRating, setNewRating] = useState(0);
   const [newComment, setNewComment] = useState('');
@@ -42,6 +47,42 @@ const SupplierDetails: React.FC<SupplierDetailsProps> = ({ user }) => {
     };
     loadSupplier();
   }, [id]);
+
+  // Lightbox Handlers
+  const openLightbox = (index: number) => {
+    setCurrentImageIndex(index);
+    setIsLightboxOpen(true);
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+  };
+
+  const closeLightbox = () => {
+    setIsLightboxOpen(false);
+    document.body.style.overflow = 'unset';
+  };
+
+  const handleNext = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (!supplier?.gallery) return;
+    setCurrentImageIndex((prev) => (prev + 1) % supplier.gallery.length);
+  };
+
+  const handlePrev = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (!supplier?.gallery) return;
+    setCurrentImageIndex((prev) => (prev === 0 ? supplier.gallery.length - 1 : prev - 1));
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isLightboxOpen) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') handleNext(); // Left arrow for next in RTL
+      if (e.key === 'ArrowRight') handlePrev(); // Right arrow for prev in RTL
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLightboxOpen, supplier]);
+
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,11 +205,16 @@ const SupplierDetails: React.FC<SupplierDetailsProps> = ({ user }) => {
             <div className="flex-1 pt-4 md:pt-16">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <h1 className="text-3xl font-black text-slate-900 flex items-center gap-2 mb-2">
-                    {supplier.name}
-                    {supplier.isVerified && <BadgeCheck size={24} className="text-blue-500 fill-blue-50" />}
+                  <h1 className="text-3xl font-black text-slate-900 mb-2">
+                    <div className="flex items-center gap-2">
+                        {supplier.name}
+                        {supplier.isVerified && <BadgeCheck size={24} className="text-blue-500 fill-blue-50" />}
+                    </div>
+                    <span className="block text-lg text-slate-500 font-medium mt-1">
+                        مورد {supplier.category} في {supplier.city}
+                    </span>
                   </h1>
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600">
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-slate-600 mt-3">
                     <span className="flex items-center gap-1 bg-slate-100 px-3 py-1 rounded-full">
                       <Building2 size={14} /> {supplier.category}
                     </span>
@@ -233,19 +279,40 @@ const SupplierDetails: React.FC<SupplierDetailsProps> = ({ user }) => {
             {supplier.gallery && supplier.gallery.length > 0 && (
               <section className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                 <h2 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">معرض الصور</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                   <div className="md:col-span-3 h-80 rounded-xl overflow-hidden cursor-pointer shadow-md bg-slate-100">
-                      <img src={activeImage} alt="Main" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                   {/* Main Large Image */}
+                   <div 
+                     className="md:col-span-4 h-96 rounded-xl overflow-hidden cursor-pointer shadow-md bg-slate-100 relative group"
+                     onClick={() => {
+                        const idx = supplier.gallery.indexOf(activeImage);
+                        if (idx !== -1) openLightbox(idx);
+                        else if (supplier.gallery.length > 0) openLightbox(0);
+                     }}
+                   >
+                      <img 
+                        src={activeImage} 
+                        alt="Main" 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 duration-300">
+                         <div className="bg-white/20 backdrop-blur-md p-3 rounded-full text-white transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                            <Maximize2 size={32} />
+                         </div>
+                      </div>
                    </div>
-                   {supplier.gallery.map((img, idx) => (
-                     <div 
-                      key={idx} 
-                      onClick={() => setActiveImage(img)}
-                      className={`h-24 rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${activeImage === img ? 'border-primary-500 ring-2 ring-primary-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
-                     >
-                       <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
-                     </div>
-                   ))}
+
+                   {/* Thumbnails */}
+                   <div className="md:col-span-4 flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
+                       {supplier.gallery.map((img, idx) => (
+                         <div 
+                          key={idx} 
+                          onClick={() => setActiveImage(img)}
+                          className={`w-24 h-24 shrink-0 rounded-lg overflow-hidden cursor-pointer border-2 transition-all relative ${activeImage === img ? 'border-primary-500 ring-2 ring-primary-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                         >
+                           <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
+                         </div>
+                       ))}
+                   </div>
                 </div>
               </section>
             )}
@@ -476,6 +543,63 @@ const SupplierDetails: React.FC<SupplierDetailsProps> = ({ user }) => {
             </div>
         </div>
       </div>
+
+      {/* Lightbox Modal */}
+      {isLightboxOpen && supplier.gallery && (
+        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-200" onClick={closeLightbox}>
+          
+          <button 
+            onClick={closeLightbox}
+            className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all z-10"
+          >
+            <X size={32} />
+          </button>
+
+          {/* Navigation Buttons - Reversed for RTL Logic: Left Arrow goes Next in Sequence */}
+          {supplier.gallery.length > 1 && (
+            <>
+              <button 
+                onClick={handlePrev}
+                className="absolute right-4 md:right-8 text-white/70 hover:text-white hover:bg-white/10 p-3 rounded-full transition-all hidden md:block z-10"
+              >
+                <ChevronRight size={40} /> 
+              </button>
+
+              <button 
+                onClick={handleNext}
+                className="absolute left-4 md:left-8 text-white/70 hover:text-white hover:bg-white/10 p-3 rounded-full transition-all hidden md:block z-10"
+              >
+                 <ChevronLeft size={40} />
+              </button>
+            </>
+          )}
+
+          <div 
+              className="w-full h-full md:h-[85vh] md:w-[85vw] flex flex-col items-center justify-center p-4" 
+              onClick={(e) => e.stopPropagation()}
+          >
+             <img 
+               key={currentImageIndex} // Key ensures animation restarts on change
+               src={supplier.gallery[currentImageIndex]} 
+               alt="Full view" 
+               className="max-h-full max-w-full object-contain rounded shadow-2xl animate-in zoom-in-95 duration-300"
+             />
+             
+             <div className="mt-4 text-white/80 font-medium bg-black/50 px-4 py-2 rounded-full text-sm backdrop-blur-sm">
+                {currentImageIndex + 1} / {supplier.gallery.length}
+             </div>
+             
+             {/* Mobile Nav */}
+             {supplier.gallery.length > 1 && (
+                <div className="flex md:hidden gap-8 mt-6">
+                    <button onClick={handlePrev} className="bg-white/10 p-3 rounded-full text-white active:bg-white/20"><ChevronRight size={24} /></button>
+                    <button onClick={handleNext} className="bg-white/10 p-3 rounded-full text-white active:bg-white/20"><ChevronLeft size={24} /></button>
+                </div>
+             )}
+          </div>
+
+        </div>
+      )}
     </div>
   );
 };

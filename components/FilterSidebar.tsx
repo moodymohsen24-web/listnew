@@ -1,7 +1,7 @@
 import React from 'react';
 import { FilterState } from '../types';
-import { CITIES, CITIES_DATA, CATEGORIES } from '../mockData';
-import { Filter, X } from 'lucide-react';
+import { CITIES, CITIES_DATA, CATEGORIES, MOCK_SUPPLIERS } from '../mockData';
+import { Filter, X, Tag } from 'lucide-react';
 
 interface FilterSidebarProps {
   filters: FilterState;
@@ -21,7 +21,18 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, clas
     }
   };
 
+  const handleTagToggle = (tag: string) => {
+    const newTags = filters.selectedTags.includes(tag)
+      ? filters.selectedTags.filter(t => t !== tag)
+      : [...filters.selectedTags, tag];
+    setFilters(prev => ({ ...prev, selectedTags: newTags }));
+  };
+
   const availableRegions = filters.city ? CITIES_DATA[filters.city] || [] : [];
+
+  // Extract unique tags from mock data for the filter list
+  // In a real app, this should come from an API aggregation
+  const availableTags = Array.from(new Set(MOCK_SUPPLIERS.flatMap(s => s.tags))).slice(0, 10);
 
   return (
     <div className={`bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-fit ${className}`}>
@@ -51,6 +62,36 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, clas
           </div>
           <span className="text-sm font-medium text-slate-700">موردين موثقين فقط</span>
         </label>
+      </div>
+
+      {/* Category */}
+      <div className="mb-6">
+        <label className="block text-sm font-bold text-slate-700 mb-2">التصنيف</label>
+        <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar p-1">
+            <label className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded transition-colors">
+                <input 
+                    type="radio" 
+                    name="category"
+                    checked={filters.category === ""}
+                    onChange={() => handleChange('category', "")}
+                    className="accent-primary-600"
+                />
+                <span className="text-sm text-slate-600">الكل</span>
+            </label>
+            {CATEGORIES.map(cat => (
+                <label key={cat} className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded transition-colors">
+                    <input 
+                        type="radio" 
+                        name="category"
+                        value={cat}
+                        checked={filters.category === cat}
+                        onChange={(e) => handleChange('category', e.target.value)}
+                        className="accent-primary-600"
+                    />
+                    <span className="text-sm text-slate-600">{cat}</span>
+                </label>
+            ))}
+        </div>
       </div>
 
       {/* City */}
@@ -85,35 +126,52 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, clas
         </div>
       )}
 
-      {/* Category */}
+      {/* Min Order Value Filter */}
       <div className="mb-6">
-        <label className="block text-sm font-bold text-slate-700 mb-2">التصنيف</label>
-        <div className="space-y-2 max-h-48 overflow-y-auto custom-scrollbar">
-            <label className="flex items-center gap-2 cursor-pointer">
-                <input 
-                    type="radio" 
-                    name="category"
-                    checked={filters.category === ""}
-                    onChange={() => handleChange('category', "")}
-                    className="accent-primary-600"
-                />
-                <span className="text-sm text-slate-600">الكل</span>
-            </label>
-            {CATEGORIES.map(cat => (
-                <label key={cat} className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                        type="radio" 
-                        name="category"
-                        value={cat}
-                        checked={filters.category === cat}
-                        onChange={(e) => handleChange('category', e.target.value)}
-                        className="accent-primary-600"
-                    />
-                    <span className="text-sm text-slate-600">{cat}</span>
-                </label>
-            ))}
+        <label className="block text-sm font-bold text-slate-700 mb-2">الحد الأقصى لأقل طلب (EGP)</label>
+        <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+             <span>أظهر الموردين الذين يقبلون طلبات بـ:</span>
         </div>
+        <input 
+          type="range" 
+          min="0" 
+          max="50000" 
+          step="500"
+          value={filters.maxMinOrderValue}
+          onChange={(e) => handleChange('maxMinOrderValue', parseInt(e.target.value))}
+          className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
+        />
+        <div className="flex justify-between text-xs font-bold text-primary-700 mt-2 bg-primary-50 p-2 rounded-lg border border-primary-100">
+          <span>{filters.maxMinOrderValue === 0 ? 'غير محدد' : `${filters.maxMinOrderValue} جنيه`}</span>
+        </div>
+        <p className="text-[10px] text-slate-400 mt-1">
+            * اختر المبلغ الذي تريد بدء الشراء به، وسنعرض لك الموردين المناسبين.
+        </p>
       </div>
+
+      {/* Tags Filter */}
+      {availableTags.length > 0 && (
+        <div className="mb-6">
+             <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                <Tag size={14} /> كلمات مفتاحية (Tags)
+             </label>
+             <div className="flex flex-wrap gap-2">
+                 {availableTags.map(tag => (
+                     <button
+                        key={tag}
+                        onClick={() => handleTagToggle(tag)}
+                        className={`text-xs px-2 py-1 rounded-md border transition-colors ${
+                            filters.selectedTags.includes(tag)
+                            ? 'bg-primary-600 text-white border-primary-600'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-primary-300'
+                        }`}
+                     >
+                         {tag}
+                     </button>
+                 ))}
+             </div>
+        </div>
+      )}
 
       {/* Min Followers */}
       <div className="mb-6">
