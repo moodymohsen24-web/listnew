@@ -38,6 +38,9 @@ const SupplierDetails: React.FC<SupplierDetailsProps> = ({ user }) => {
         if (data) {
           setSupplier(data);
           setActiveImage(data.gallery?.[0] || data.coverUrl);
+          
+          // SEO: Dynamic Title
+          document.title = `${data.name} - ${data.category} | موردين مصر`;
         }
       } catch (error) {
         console.error("Error loading supplier", error);
@@ -147,7 +150,7 @@ const SupplierDetails: React.FC<SupplierDetailsProps> = ({ user }) => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <Loader2 size={40} className="animate-spin text-primary-600 mb-4" />
-        <p className="text-slate-500">جاري تحميل بيانات المورد...</p>
+        <p className="text-slate-500">جاري تحميل البيانات...</p>
       </div>
     );
   }
@@ -165,6 +168,34 @@ const SupplierDetails: React.FC<SupplierDetailsProps> = ({ user }) => {
     );
   }
 
+  // Generate LocalBusiness Schema
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": supplier.name,
+    "image": supplier.logoUrl,
+    "telephone": supplier.contactPhone,
+    "email": supplier.email,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": supplier.address,
+      "addressLocality": supplier.city,
+      "addressRegion": supplier.region,
+      "addressCountry": "EG"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": supplier.location.lat,
+      "longitude": supplier.location.lng
+    },
+    "url": window.location.href,
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": supplier.rating,
+        "reviewCount": supplier.reviewCount || 1
+    }
+  };
+
   // Helper for social icons
   const getSocialIcon = (platform: string) => {
     switch (platform) {
@@ -179,6 +210,11 @@ const SupplierDetails: React.FC<SupplierDetailsProps> = ({ user }) => {
   return (
     <div className="bg-slate-50 min-h-screen pb-20">
       
+      {/* Inject Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify(localBusinessSchema)}
+      </script>
+
       {/* Hero Header */}
       <div className="bg-white border-b border-slate-200">
         <div className="relative h-64 md:h-80 bg-slate-900">

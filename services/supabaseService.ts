@@ -7,13 +7,13 @@ import { MOCK_SUPPLIERS } from '../mockData';
 
 /**
  * Mocks fetching suppliers from a database.
- * Supports simulation of network delay.
+ * Reduced latency for a snappier feel.
  */
 export const fetchSuppliers = async (): Promise<Supplier[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(MOCK_SUPPLIERS);
-    }, 800); // Simulate realistic network delay
+    }, 150); // Reduced from 800ms to 150ms for "instant" feel
   });
 };
 
@@ -24,7 +24,7 @@ export const fetchSupplierById = async (id: string): Promise<Supplier | undefine
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(MOCK_SUPPLIERS.find(s => s.id === id));
-      }, 500);
+      }, 100); // Reduced from 500ms
     });
   };
 
@@ -40,7 +40,7 @@ export const loginUser = async (email: string): Promise<User> => {
         name: 'أحمد محمد',
         role: email.includes('admin') ? 'admin' : 'user',
       });
-    }, 1000);
+    }, 400); // Reduced delay
   });
 };
 
@@ -49,5 +49,5 @@ export const loginUser = async (email: string): Promise<User> => {
  */
 export const addSupplier = async (supplier: Partial<Supplier>): Promise<boolean> => {
   console.log("Adding supplier to Supabase:", supplier);
-  return new Promise((resolve) => setTimeout(() => resolve(true), 1000));
+  return new Promise((resolve) => setTimeout(() => resolve(true), 300));
 };

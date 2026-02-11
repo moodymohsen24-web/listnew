@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -7,7 +7,18 @@ import Directory from './pages/Directory';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import SupplierDetails from './pages/SupplierDetails';
+import About from './pages/About';
+import Pricing from './pages/Pricing';
 import { User } from './types';
+
+// Component to scroll to top on route change
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -18,15 +29,21 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="flex flex-col min-h-screen font-sans text-right" dir="rtl">
         <Navbar user={user} onLogout={handleLogout} />
         
-        <main className="flex-grow">
+        <main className="flex-grow pt-16">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/directory" element={<Directory />} />
             <Route path="/supplier/:id" element={<SupplierDetails user={user} />} />
-            <Route path="/login" element={<Login setUser={setUser} />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/pricing" element={<Pricing />} />
+            
+            <Route path="/login" element={<Login setUser={setUser} initialMode="login" />} />
+            <Route path="/register" element={<Login setUser={setUser} initialMode="register" />} />
+            
             <Route 
               path="/admin" 
               element={
@@ -37,7 +54,6 @@ const App: React.FC = () => {
                 )
               } 
             />
-            {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

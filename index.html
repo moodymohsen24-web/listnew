@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>موردين مصر | دليلك الأول للتجارة</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>موردين مصر | بوابة التجارة والأعمال الأولى</title>
+    <meta name="title" content="موردين مصر | بوابة التجارة والأعمال الأولى">
+    <meta name="description" content="المنصة الرسمية لربط المصانع المصرية بالتجار والمستوردين. قاعدة بيانات موثقة، مناقصات، وفرص تجارية حقيقية.">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
@@ -16,36 +21,67 @@
               sans: ['Cairo', 'sans-serif'],
             },
             colors: {
+              // Corporate Royal Navy Palette
               primary: {
-                50: '#f0fdf4',
-                100: '#dcfce7',
-                500: '#22c55e',
-                600: '#16a34a',
-                700: '#15803d',
-                900: '#14532d',
+                50: '#f0f4f8',
+                100: '#d9e2ec',
+                200: '#bcccdc',
+                300: '#9fb3c8',
+                400: '#829ab1',
+                500: '#627d98',
+                600: '#486581',
+                700: '#334e68',
+                800: '#243b53',
+                900: '#102a43', // Main Brand Color
+                950: '#061523',
+              },
+              // Gold/Bronze Accent for CTA and High value items
+              accent: {
+                500: '#d69e2e',
+                600: '#b47b1b', 
+                700: '#975a16',
               },
               secondary: {
-                900: '#1e293b',
+                900: '#0f172a',
               }
+            },
+            boxShadow: {
+              'card': '0 2px 8px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.06)',
+              'card-hover': '0 10px 25px -5px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.06)',
+              'glow': '0 0 20px rgba(214, 158, 46, 0.3)',
+            },
+            backgroundImage: {
+              'pattern-grid': "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm1 1h38v38H1V1z' fill='%23102a43' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E\")",
             }
           }
         }
       }
     </script>
     <style>
-      /* Custom Scrollbar for a premium feel */
       ::-webkit-scrollbar {
         width: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #f1f1f1; 
+        background: #f1f5f9; 
       }
       ::-webkit-scrollbar-thumb {
-        background: #cbd5e1; 
+        background: #94a3b8; 
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8; 
+        background: #64748b; 
+      }
+      
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #f8fafc;
+      }
+      
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
       }
     </style>
   <script type="importmap">
@@ -60,7 +96,7 @@
 }
 </script>
 </head>
-  <body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-primary-500 selection:text-white">
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-primary-900 selection:text-white">
     <div id="root"></div>
   </body>
 </html>
